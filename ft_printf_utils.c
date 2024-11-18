@@ -6,51 +6,135 @@
 /*   By: nbenhami <nbenhami@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 18:52:26 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/17 01:08:48 by nbenhami         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:47:50 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "ft_printf.h"
+
+static int	ft_strlen(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
 
 int	ft_putchar(char c, int fd)
 {
 	write(fd, &c, sizeof(c));
+	return (1);
 }
 
 int	ft_putstr(char *str, int fd)
 {
+	if(!str)
+	{
+		write(fd, "(null)", 6);
+		return (6);
+	}
 	write(fd, str, sizeof(str));
+	return(ft_strlen(str));
 }
 
-int	ft_putnumber(int n, int fd)
+static int	ft_is_valid_base(char *base)
 {
-	char	c;
+	int i;
+	int	j;
 
+	i = 0;
+	while (base[i])
+	{
+		if (base[i] == '+' || base[i] == '-' || base[i] < 32 || base[i] > 126)
+			return (0);
+		j = i + 1;
+		while (base[j])
+		{
+			if (base[i] == base[j])
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (i >= 2);
+}
+
+int	ft_putbase(char *base, long long n, int fd)
+{
+	int		base_len;
+	char	c;
+	int		count;
+
+	if (!ft_is_valid_base(base))
+		return (0);
+	base_len = ft_strlen(base);
+	count = 0;
 	if (n == -2147483648)
 	{
-		write(fd, "-2147483648", 11);
-		return ;
+		count += ft_putbase(base, n / base_len, fd);
+		c = base[-(n % base_len)];
+		write(fd, &c, 1);
+		return (count + 1);
 	}
 	if (n < 0)
 	{
 		write(fd, "-", 1);
 		n = -n;
+		count++;
 	}
-	if (n > 9)
-		ft_putnbr_fd(n / 10, fd);
-	c = (n % 10) + '0';
+	if (n >= base_len)
+		count += ft_putbase(base, n / base_len, fd);
+	c = base[n % base_len];
 	write(fd, &c, 1);
+	return (count + 1);
 }
 
-int	ft_putbase(char *base, int n, int fd)
+int ft_putpointer(void *ptr, int fd)
 {
-	char	c;
+	unsigned long	address;
+	int				count;
 
-	if (n < 0)
+	address = (unsigned long)ptr;
+	count = 0;
+	count += ft_putchar('0', fd);
+	count += ft_putchar('x', fd); 
+	count += ft_putbase("0123456789abcdef", address, fd);
+	return count;
+}
+
+int	ft_check_format(char c, va_list args)
+{
+	int	count;
+
+	count = 0;
+	switch (c)
 	{
-		write(fd, "-", 1);
-		n = -n;
+	case 's':
+		count = ft_putstr((char *)va_arg(args, char *), 1);
+		break;
+	case 'c':
+		count = ft_putchar((char)va_arg(args, int), 1);
+		break;
+	case 'd':
+		count = ft_putbase("0123456789", (int)va_arg(args, int), 1);
+		break;
+	case 'x':
+		count = ft_putbase("0123456789abcdef", (int)va_arg(args, int), 1);
+		break;
+	case 'X':
+		count = ft_putbase("0123456789ABCDEF", (int)va_arg(args, int), 1);
+		break;
+	case 'p':
+		count = ft_putpointer((void *)va_arg(args, void *), 1);
+		break;	
+	case '%':
+		ft_putchar('%', 1);
+		count = 1;
+		break;
+	default:
+		break;
 	}
-	if (n > 9)
-		ft_putnbr_fd(n / sizeof(base), fd);
-	c = base[n % 10];
-	write(fd, &c, 1);
+	return (count);
 }

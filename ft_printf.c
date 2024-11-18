@@ -6,7 +6,7 @@
 /*   By: nbenhami <nbenhami@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:35:52 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/16 18:41:17 by nbenhami         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:11:33 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,16 @@ int	ft_printf(const char *format, ...)
 	{
 		if (*format == '%')
 		{
-			written_char += check_format(*format++, params);
+			format++;
+			written_char += ft_check_format(*format, params);
 		}
 		else
 		{
-			ft_putchar(*format);
+			ft_putchar(*format, 1);
 			written_char++;
 		}
-		*++format;
+		format++;
 	}
+	va_end(params);
 	return (written_char);
 }
