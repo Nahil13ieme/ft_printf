@@ -6,7 +6,7 @@
 /*   By: nbenhami <nbenhami@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 18:52:26 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/17 22:47:50 by nbenhami         ###   ########.fr       */
+/*   Updated: 2024/11/18 04:38:28 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,27 @@ int	ft_putbase(char *base, long long n, int fd)
 	return (count + 1);
 }
 
+static int	ft_putbase_x(char *base, int n, int fd)
+{
+	unsigned int	abs_n;
+	int				base_len;
+	char			c;
+	int				count;
+
+	if (!ft_is_valid_base(base))
+		return (0);
+	base_len = ft_strlen(base);
+	count = 0;
+
+	abs_n = (unsigned int)n; // Convert to unsigned to handle two's complement
+
+	if (abs_n >= (unsigned int)base_len)
+		count += ft_putbase_x(base, abs_n / base_len, fd);
+	c = base[abs_n % base_len];
+	write(fd, &c, 1);
+	return (count + 1);
+}
+
 int ft_putpointer(void *ptr, int fd)
 {
 	unsigned long	address;
@@ -121,10 +142,10 @@ int	ft_check_format(char c, va_list args)
 		count = ft_putbase("0123456789", (int)va_arg(args, int), 1);
 		break;
 	case 'x':
-		count = ft_putbase("0123456789abcdef", (int)va_arg(args, int), 1);
+		count = ft_putbase_x("0123456789abcdef", (int)va_arg(args, int), 1);
 		break;
 	case 'X':
-		count = ft_putbase("0123456789ABCDEF", (int)va_arg(args, int), 1);
+		count = ft_putbase_x("0123456789ABCDEF", (int)va_arg(args, int), 1);
 		break;
 	case 'p':
 		count = ft_putpointer((void *)va_arg(args, void *), 1);
