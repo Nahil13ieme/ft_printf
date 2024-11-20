@@ -1,23 +1,27 @@
-# Variables
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I
+FLAGS = -Wall -Wextra -Werror
+
 NAME = libftprintf.a
-SRCS = ft_printf.c ft_printf_utils.c ft_utils.c ft_printf.h
-OBJS = $(SRCS:.c=.o)
 
-all: $(NAME)
+LIBFT = ft_printf.h
 
-$(NAME): $(OBJECTS)
-	$(AR) -r $@ $?
+FILES = ft_printf.c ft_printf_utils.c ft_utils.c
 
-bonus: $(OBJECTS)
-	$(AR) -r $(NAME) $?
+LIBFT_BONUS = ft_printf_bonus.h
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) $?
+OBJS = $(FILES:.c=.o)
+OBJS_BONUS = $(FILES_BONUS:.c=.o)
+
+all: ${NAME}
+
+$(NAME): $(FILES)
+	$(CC) $(FLAGS) -c $(FILES)
+	ar rcs $(NAME) $(OBJS)
+
+bonus: $(NAME)
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f *.o
 
 fclean: clean
 	rm -f $(NAME)

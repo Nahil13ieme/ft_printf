@@ -6,7 +6,7 @@
 /*   By: nbenhami <nbenhami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 18:52:26 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/20 20:28:37 by nbenhami         ###   ########.fr       */
+/*   Updated: 2024/11/20 21:17:46 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ static int	ft_is_valid_base(char *base)
 
 static int	ft_putbase(char *base, unsigned long long n, int is_signed, int fd)
 {
-	char	c;
-	int		count;
-	size_t	base_len;
+	char				c;
+	int					count;
+	unsigned long long	base_len;
 
 	if (!ft_is_valid_base(base))
 		return (0);
@@ -78,16 +78,16 @@ static int	ft_putbase_x(char *base, int n, int fd)
 
 static int	ft_putpointer(void *ptr, int fd)
 {
-	unsigned long	address;
-	int				count;
+	unsigned long long	address;
+	int					count;
 
-	address = (unsigned long)ptr;
+	address = (unsigned long long)ptr;
 	if (address == 0)
 		return (ft_putstr("(nil)", fd));
 	count = 0;
 	count += ft_putchar('0', fd);
 	count += ft_putchar('x', fd);
-	count += ft_putbase("0123456789abcdef", address, 1, fd);
+	count += ft_putbase("0123456789abcdef", address, 0, fd);
 	return (count);
 }
 
@@ -101,7 +101,7 @@ int	ft_check_format(char c, va_list args)
 		return (ft_putbase("0123456789", (int)va_arg(args, int), 1, 1));
 	else if (c == 'u')
 		return (ft_putbase("0123456789",
-				unsigned int)va_arg(args, unsigned int), 0, 1);
+				(unsigned int)va_arg(args, unsigned int), 0, 1));
 	else if (c == 'x')
 		return (ft_putbase_x("0123456789abcdef", (int)va_arg(args, int), 1));
 	else if (c == 'X')
