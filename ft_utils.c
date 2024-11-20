@@ -1,38 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbenhami <nbenhami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 18:35:52 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/20 20:26:29 by nbenhami         ###   ########.fr       */
+/*   Created: 2024/11/20 20:17:27 by nbenhami          #+#    #+#             */
+/*   Updated: 2024/11/20 20:29:21 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *format, ...)
+int	ft_strlen(char *str)
 {
-	va_list	params;
-	size_t	written_char;
+	int	i;
 
-	va_start(params, format);
-	written_char = 0;
-	while (*format)
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+int	ft_putchar(char c, int fd)
+{
+	write(fd, &c, sizeof(c));
+	return (1);
+}
+
+int	ft_putstr(char *str, int fd)
+{
+	int	len;
+
+	if (!str)
 	{
-		if (*format == '%')
-		{
-			format++;
-			written_char += ft_check_format(*format, params);
-		}
-		else
-		{
-			ft_putchar(*format, 1);
-			written_char++;
-		}
-		format++;
+		write(fd, "(null)", 6);
+		return (6);
 	}
-	va_end(params);
-	return (written_char);
+	len = ft_strlen(str);
+	write(fd, str, len);
+	return (len);
 }
