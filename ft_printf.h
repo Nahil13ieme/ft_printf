@@ -6,7 +6,7 @@
 /*   By: nbenhami <nbenhami@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:34:22 by nbenhami          #+#    #+#             */
-/*   Updated: 2024/11/18 04:38:09 by nbenhami         ###   ########.fr       */
+/*   Updated: 2024/11/19 19:56:46 by nbenhami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 int	ft_printf(const char *, ...);
 int	ft_putchar(char c, int fd);
 int	ft_putstr(char *str, int fd);
-int	ft_putbase(char *base, long long n, int fd);
+int	ft_putbase(char *base, unsigned long long n, int is_signed, int fd);
 int ft_putpointer(void *ptr, int fd);
 int	ft_check_format(char c, va_list args);
 
